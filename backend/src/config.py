@@ -26,5 +26,7 @@ class Settings(BaseSettings):
     PINECONE_API_KEY: str = ""
     PINECONE_INDEX_NAME: str = "docuflow"
 
+    # Hugging Face
+    HF_TOKEN: str = ""
 
 settings = Settings()

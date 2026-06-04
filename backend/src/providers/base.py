@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List, Dict
 
-
 class BaseLLMProvider(ABC):
+    SUPPORTED_MODELS: dict = {}
 
     @abstractmethod
     def chat(self, messages: List[Dict], model: str) -> str:

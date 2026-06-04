@@ -1,13 +1,13 @@
 from src.providers.base import BaseLLMProvider
 from src.providers.openai import OpenAIProvider
 from src.providers.anthropic import AnthropicProvider
-from src.providers.gemini import GeminiProvider
+from src.providers.google import GoogleProvider
 
 
 PROVIDERS = {
     "openai": OpenAIProvider,
     "anthropic": AnthropicProvider,
-    "gemini": GeminiProvider,
+    "google": GoogleProvider,
 }
 
 

@@ -4,7 +4,22 @@ from typing import List, Dict
 from src.providers.base import BaseLLMProvider
 
 
-class GeminiProvider(BaseLLMProvider):
+class GoogleProvider(BaseLLMProvider):
+
+    SUPPORTED_MODELS = {
+        "gemini-2.5-flash": {
+            "display_name": "Gemini 2.5 Flash",
+            "description": "Fast and efficient, good for most tasks",
+        },
+        "gemini-2.5-pro": {
+            "display_name": "Gemini 2.5 Pro",
+            "description": "Most capable, best for complex tasks",
+        },
+        "gemini-2.5-flash-lite": {
+            "display_name": "Gemini 2.5 Flash Lite",
+            "description": "Lightest and fastest, good for simple tasks",
+        },
+    }
 
     def __init__(self, api_key: str):
         self.client = genai.Client(api_key=api_key)
