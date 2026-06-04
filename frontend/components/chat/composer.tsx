@@ -16,17 +16,28 @@ export function ChatComposer({
   disabled = false,
 }: ChatComposerProps) {
   const [message, setMessage] = useState("");
-  const { sendMessage, isLoading, availableProviders } = useChatSession();
 
-  const hasProvider = availableProviders.length > 0;
+  const {
+    sendMessage,
+    isLoading,
+    isLoadingProviders,
+    providerModels,
+    selectedApiKeyId,
+    selectedModel,
+  } = useChatSession();
+
+  const hasProviders = providerModels.length > 0;
+  const hasSelection = selectedApiKeyId !== null && selectedModel.length > 0;
 
   const canSend = useMemo(
     () =>
       message.trim().length > 0 &&
       !disabled &&
       !isLoading &&
-      hasProvider,
-    [message, disabled, isLoading, hasProvider]
+      !isLoadingProviders &&
+      hasProviders &&
+      hasSelection,
+    [message, disabled, isLoading, isLoadingProviders, hasProviders, hasSelection]
   );
 
   async function handleSubmit() {
@@ -41,15 +52,13 @@ export function ChatComposer({
     <div className="rounded-[28px] border border-white/10 bg-white/12 p-3 shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-md">
       <div className="mb-3 flex items-center justify-between gap-3">
         <ModelPicker />
-        {!hasProvider ? (
-          <div className="text-xs text-muted-foreground">
-            Connect a provider key to unlock models
-          </div>
-        ) : (
-          <div className="text-xs text-muted-foreground">
-            Models are available per provider
-          </div>
-        )}
+        <div className="text-xs text-muted-foreground">
+          {isLoadingProviders
+            ? "Loading provider keys..."
+            : hasProviders
+              ? "Models are loaded from your saved API keys"
+              : "Connect a provider key to unlock models"}
+        </div>
       </div>
 
       <div className="flex items-end gap-3">
@@ -73,10 +82,10 @@ export function ChatComposer({
             }}
             rows={3}
             placeholder={placeholder}
-            disabled={disabled || isLoading || !hasProvider}
+            disabled={disabled || isLoading || isLoadingProviders || !hasSelection}
             className={cn(
               "min-h-20 w-full resize-none bg-transparent px-1 py-2 text-[15px] leading-6 outline-none placeholder:text-muted-foreground",
-              (disabled || isLoading || !hasProvider) &&
+              (disabled || isLoading || isLoadingProviders || !hasSelection) &&
                 "cursor-not-allowed opacity-60"
             )}
           />

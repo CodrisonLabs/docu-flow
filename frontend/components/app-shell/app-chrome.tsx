@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppSidebar } from "@/components/app-shell/sidebar";
 import { AppTopbar } from "@/components/app-shell/topbar";
@@ -8,7 +8,6 @@ import { MobileSidebar } from "@/components/app-shell/mobile-sidebar";
 import { useChatSession } from "@/components/chat/session";
 import { useConversations } from "@/hooks/use-conversations";
 import { api } from "@/lib/api";
-import { getAvailableModelProviders } from "@/lib/models";
 
 export function AppChrome({
   children,
@@ -24,32 +23,9 @@ export function AppChrome({
     loadConversationMessages,
     clearMessages,
     setConversationId,
-    setAvailableProviders,
   } = useChatSession();
 
   const { conversations, loading, refresh } = useConversations();
-
-  useEffect(() => {
-    async function loadProviderKeys() {
-      try {
-        const keys = await api.apiKeys.list();
-        setAvailableProviders(
-          getAvailableModelProviders(keys.map((key) => key.provider))
-        );
-      } catch (error) {
-        console.error(error);
-        setAvailableProviders([]);
-      }
-    }
-
-    void loadProviderKeys();
-  }, [setAvailableProviders]);
-
-  useEffect(() => {
-    if (conversationId !== null) {
-      void refresh();
-    }
-  }, [conversationId, refresh]);
 
   async function handleDeleteConversation(id: number) {
     const confirmed = window.confirm(
