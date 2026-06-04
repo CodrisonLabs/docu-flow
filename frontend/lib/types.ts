@@ -20,17 +20,29 @@ export type ApiKey = {
   provider: string;
 };
 
-export type Namespace = {
+export type ApiKeyModel = {
+  id: string;
+  display_name: string;
+  description?: string;
+};
+
+export type ProviderWithModels = {
   id: number;
-  name: string;
-  pinecone_ref: string;
-  created_at: string;
+  provider: string;
+  models: ApiKeyModel[];
 };
 
 export type KnowledgeBase = {
   id: number;
   created_at: string;
   namespaces: Namespace[];
+};
+
+export type Namespace = {
+  id: number;
+  name: string;
+  pinecone_ref: string;
+  created_at: string;
 };
 
 export type ChatRequest = {
@@ -69,11 +81,14 @@ export type NamespaceCreate = {
 export type MessageRole = "user" | "assistant" | "system";
 
 export type Message = {
-  id: string;
+  id: number | string;
   role: MessageRole;
   content: string;
+  created_at?: string;
   createdAt?: string;
   model?: string;
   provider?: string;
+  conversation_id?: number;
+  conversationId?: number;
   sources?: string[];
 };

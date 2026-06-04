@@ -1,6 +1,7 @@
 import type {
   ApiKey,
   ApiKeyCreate,
+  ApiKeyModel,
   ChatRequest,
   Conversation,
   ConversationCreate,
@@ -110,6 +111,9 @@ export const api = {
         body: JSON.stringify(body),
       }),
 
+    messages: (conversationId: number) =>
+      request<Message[]>(`/conversations/${conversationId}/messages`),
+
     upload: (conversationId: number, file: File) => {
       const formData = new FormData();
       formData.append("file", file);
@@ -119,10 +123,6 @@ export const api = {
         body: formData,
       });
     },
-
-    // -- Added: fetch all messages for a given conversation --
-    messages: (conversationId: number) =>
-      request<Message[]>(`/conversations/${conversationId}/messages`),
   },
 
   apiKeys: {
@@ -138,6 +138,9 @@ export const api = {
       request<void>(`/api-keys/${keyId}`, {
         method: "DELETE",
       }),
+
+    models: (keyId: number) =>
+      request<ApiKeyModel[]>(`/api-keys/${keyId}/models`),
   },
 
   kb: {

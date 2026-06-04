@@ -3,58 +3,34 @@
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, LockKeyhole, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { api } from "@/lib/api";
+import { useChatSession } from "@/components/chat/session";
 import type { ApiKey } from "@/lib/types";
 
 const PROVIDERS = [
-  {
-    value: "openai",
-    label: "OpenAI",
-    helper: "GPT models and chat completions",
-  },
-  {
-    value: "anthropic",
-    label: "Anthropic",
-    helper: "Claude models",
-  },
-  {
-    value: "gemini",
-    label: "Google / Gemini",
-    helper: "Gemini models",
-  },
-  {
-    value: "groq",
-    label: "Groq",
-    helper: "Fast model access",
-  },
-  {
-    value: "openrouter",
-    label: "OpenRouter",
-    helper: "Multi-model routing",
-  },
-  {
-    value: "pinecone",
-    label: "Pinecone",
-    helper: "Knowledge base vector store",
-  },
+  { value: "openai", label: "OpenAI", helper: "GPT models and chat completions" },
+  { value: "anthropic", label: "Anthropic", helper: "Claude models" },
+  { value: "google", label: "Google", helper: "Gemini models" },
+  { value: "groq", label: "Groq", helper: "Fast model access" },
+  { value: "openrouter", label: "OpenRouter", helper: "Multi-model routing" },
+  { value: "pinecone", label: "Pinecone", helper: "Knowledge base vector store" },
 ] as const;
 
 function displayProviderName(provider: string) {
   const normalized = provider.toLowerCase();
 
-  if (normalized === "gemini" || normalized === "google") {
-    return "Google / Gemini";
+  if (normalized === "google" || normalized === "gemini") {
+    return "Google";
   }
 
-  const match = PROVIDERS.find(
-    (item) => item.value.toLowerCase() === normalized
-  );
-
+  const match = PROVIDERS.find((item) => item.value.toLowerCase() === normalized);
   return match?.label ?? provider;
 }
 
 export function ApiKeysPage() {
+  const { refreshProviders } = useChatSession();
+
   const [keys, setKeys] = useState<ApiKey[]>([]);
-  const [provider, setProvider] = useState("openai");
+  const [provider, setProvider] = useState("google");
   const [apiKey, setApiKey] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -65,7 +41,7 @@ export function ApiKeysPage() {
     return new Set(
       keys.map((key) => {
         const normalized = key.provider.toLowerCase();
-        return normalized === "google" ? "gemini" : normalized;
+        return normalized === "gemini" ? "google" : normalized;
       })
     );
   }, [keys]);
@@ -105,6 +81,7 @@ export function ApiKeysPage() {
 
       setApiKey("");
       await loadKeys();
+      await refreshProviders();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save key");
     } finally {
@@ -125,6 +102,7 @@ export function ApiKeysPage() {
     try {
       await api.apiKeys.remove(id);
       await loadKeys();
+      await refreshProviders();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete key");
     } finally {
