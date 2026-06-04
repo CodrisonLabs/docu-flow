@@ -1,2 +1,18 @@
+# Environment files
+.env
+.env*
 .gemini/.env
-.gemini/.env
+
+# Local databases
+*.db
+
+# Uploaded files
+backend/uploads/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+.next/
