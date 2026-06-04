@@ -25,7 +25,11 @@ class Namespace(Base):
     created_at = Column(DateTime, server_default=func.now())
 
     knowledge_base = relationship("KnowledgeBase", back_populates="namespaces")
-    documents = relationship("Document", back_populates="namespace")
+    documents = relationship(
+    "Document",
+    back_populates="namespace",
+    cascade="all, delete-orphan"
+)
 
 
 class Document(Base):

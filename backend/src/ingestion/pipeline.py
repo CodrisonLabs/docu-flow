@@ -4,9 +4,13 @@ from typing import List, Dict
 from docling.document_converter import DocumentConverter
 from docling.chunking import HybridChunker
 from src.vectorstore import repository as vector_repository
+from src.config import settings
+
+os.environ["HF_TOKEN"] = settings.HF_TOKEN
+
 
 converter = DocumentConverter()
-chunker = HybridChunker(chunk_size=500, chunk_overlap=50)
+chunker = HybridChunker(chunk_size=2000, chunk_overlap=200)
 
 
 def ingest_document(
